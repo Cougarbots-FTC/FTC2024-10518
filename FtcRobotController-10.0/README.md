@@ -1,8 +1,5 @@
-Hello 10518
 ## NOTICE
-Hello
 
-Hello wsp I am Rohit
 This repository contains the public FTC SDK for the CENTERSTAGE (2023-2024) competition season.
 Hello
 ## Welcome!
