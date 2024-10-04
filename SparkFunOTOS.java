@@ -25,6 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * @see <a href="https://www.sparkfun.com/products/24904">SparkFun OTOS Product Page</a>
  * @see <a href="https://github.com/sparkfun/SparkFun_Qwiic_OTOS_Arduino_Library/">Arduino Library</a>
  */
+//TODO This class should be in your team code and also this is the class that you use for FTC not the other one - Ryan
 @I2cDeviceType
 @DeviceProperties(
         name = "SparkFun OTOS",
