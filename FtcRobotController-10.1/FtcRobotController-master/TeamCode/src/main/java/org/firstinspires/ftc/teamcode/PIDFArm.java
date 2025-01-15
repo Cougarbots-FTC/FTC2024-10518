@@ -21,27 +21,30 @@ public class PIDFArm extends OpMode {
     // TODO: update based on Motor
     private final double ticksInDegrees = 28;
 
-    private DcMotorEx ArmExtender;
+    private DcMotorEx ArmRotator;
 
     @Override
     public void init() {
         controller = new PIDController(p,i,d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        ArmExtender = hardwareMap.get(DcMotorEx.class, "armRotator");
+        ArmRotator = hardwareMap.get(DcMotorEx.class, "armRotator");
+        ArmRotator.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        ArmRotator.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
     }
 
     @Override
     public void loop() {
         controller.setPID(p, i, d);
-        int armPos = ArmExtender.getCurrentPosition();
+        int armPos = ArmRotator.getCurrentPosition();
 
         double pid = controller.calculate(armPos, target);
         double ff = Math.cos(Math.toRadians(target / ticksInDegrees)) * f;
 
         double power = pid * ff;
 
-        ArmExtender.setPower(power);
+        ArmRotator.setPower(power);
 
         telemetry.addData("Arm Position: ", armPos);
         telemetry.addData("target: ", target);
