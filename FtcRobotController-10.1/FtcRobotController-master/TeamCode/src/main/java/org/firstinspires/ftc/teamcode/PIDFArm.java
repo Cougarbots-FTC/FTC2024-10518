@@ -22,6 +22,7 @@ public class PIDFArm extends OpMode {
     private final double ticksInDegrees = 28;
 
     private DcMotorEx ArmRotator;
+    private DcMotorEx leftLift;
 
     @Override
     public void init() {
@@ -32,12 +33,14 @@ public class PIDFArm extends OpMode {
         ArmRotator.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         ArmRotator.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
+        leftLift = hardwareMap.get(DcMotorEx.class, "armRotator");
     }
 
     @Override
     public void loop() {
         controller.setPID(p, i, d);
         int armPos = ArmRotator.getCurrentPosition();
+        int armPos = leftLift.getCurrentPosition();
 
         double pid = controller.calculate(armPos, target);
         double ff = Math.cos(Math.toRadians(target / ticksInDegrees)) * f;
@@ -45,6 +48,7 @@ public class PIDFArm extends OpMode {
         double power = pid * ff;
 
         ArmRotator.setPower(power);
+        leftLift.setPower(power);
 
         telemetry.addData("Arm Position: ", armPos);
         telemetry.addData("target: ", target);
