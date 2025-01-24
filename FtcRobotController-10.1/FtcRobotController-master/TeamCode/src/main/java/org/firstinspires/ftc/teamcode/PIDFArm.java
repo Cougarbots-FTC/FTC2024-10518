@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -8,51 +7,36 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-@Config
 @TeleOp
-public class PIDFArm extends OpMode {
-
+@Config
+public class PIDFArm extends OpMode{
     private PIDController controller;
-
-    public static double p = 0, i = 0, d = 0;
-    public static double f = 0;
-    public static int target = 0;
-
-    // TODO: update based on Motor
-    private final double ticksInDegrees = 28;
-
-    private DcMotorEx ArmRotator;
-    private DcMotorEx leftLift;
-
+    public static double p=0.1,i=0,d=0.0009;
+    public static double f=0.22;
+    public static int target =70;
+    private final double ticks_in_degree = 2100;
+    private DcMotorEx arm_motor;
     @Override
-    public void init() {
+    public void init(){
         controller = new PIDController(p,i,d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        ArmRotator = hardwareMap.get(DcMotorEx.class, "armRotator");
-        ArmRotator.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        ArmRotator.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-
-        leftLift = hardwareMap.get(DcMotorEx.class, "armRotator");
+        arm_motor = hardwareMap.get(DcMotorEx.class,"armRotator");
+        arm_motor.setDirection(DcMotorEx.Direction.REVERSE);
     }
-
     @Override
-    public void loop() {
-        controller.setPID(p, i, d);
-        int armPos = ArmRotator.getCurrentPosition();
-        int armPos = leftLift.getCurrentPosition();
-
+    public void loop(){
+        controller.setPID(p,i,d);
+        int armPos = arm_motor.getCurrentPosition();
         double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(Math.toRadians(target / ticksInDegrees)) * f;
+        double ff = Math.cos(Math.toRadians(target/ticks_in_degree))*f;
 
-        double power = pid * ff;
+        double power = pid +ff;
 
-        ArmRotator.setPower(power);
-        leftLift.setPower(power);
+        arm_motor.setPower(power);
 
-        telemetry.addData("Arm Position: ", armPos);
-        telemetry.addData("target: ", target);
+        telemetry.addData("pos",armPos);
+        telemetry.addData("target", target);
         telemetry.update();
-
     }
 }
