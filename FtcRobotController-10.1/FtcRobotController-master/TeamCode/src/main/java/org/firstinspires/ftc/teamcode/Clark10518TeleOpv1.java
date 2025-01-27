@@ -15,6 +15,7 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
 
     //Initialized Hardware map instance variable assigned to "robot"
     Clark10518HWMap robot = new Clark10518HWMap();
+    private PIDFArm pidfArm;
 
     // -------------Create all the variables necessary for Robot movement-------------//
 
@@ -49,6 +50,7 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
     public void runOpMode(){
         //Initiates the Map function, assigning items to instance variables in the hardware map
         robot.Map(hardwareMap);
+        pidfArm = new PIDFArm(robot.armRotator);
         // Initialization of hardware
         easterEggs();
         innitHarware();
@@ -81,6 +83,7 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
 
         }
     }
+
     public void moveChassis(){
         //Slow mode whenever you need to go slower to get precise blocks
         //TODO change controller input if needed
@@ -170,15 +173,17 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
     }
 
     public void rotateArm(){
-        if (gamepad1.dpad_left) {
-            robot.armRotator.setPower(-1);
-
-        } else if (gamepad1.dpad_right) {
-            //down
-            robot.armRotator.setPower(1);
-        } else {
-            robot.armRotator.setPower(0.2);
+        if (gamepad2.a) {
+            pidfArm.setSetpoint(-150); // Set encoder position to -150
+        } else if (gamepad2.b) {
+            pidfArm.setSetpoint(-300); // Set encoder position to -300
         }
+        pidfArm.loop();
+
+        // Telemetry for debugging
+        //telemetry.addData("Target Position", pidfArm.getSetpoint());
+        telemetry.addData("Current Position", robot.armRotator.getCurrentPosition());
+        telemetry.update();
     }
 
 
@@ -256,4 +261,6 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
         booleanIncrementer = booleanIncrementer + 1;
         return output;
     }
+
+
 }
