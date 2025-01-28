@@ -147,7 +147,6 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
     }
 
     public void initRotator(){
-        robot.armRotator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void initExtender(){
