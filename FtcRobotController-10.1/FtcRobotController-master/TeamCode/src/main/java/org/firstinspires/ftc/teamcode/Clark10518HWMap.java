@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 //Imports
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
+
 
 
 //Clark Robotics 15024 Hardware Map
@@ -21,7 +25,7 @@ public class Clark10518HWMap {
     public DcMotor rightLift = null;
 
     public DcMotor armExtender = null;
-    public DcMotor armRotator = null;
+    public DcMotorEx armRotator = null;
 
     public Servo claw = null;
     public Servo wristX = null;
@@ -49,7 +53,7 @@ public class Clark10518HWMap {
         leftLift = HWM.get(DcMotor.class, "leftLift");
         rightLift = HWM.get(DcMotor.class, "rightLift");
         armExtender = HWM.get(DcMotor.class, "armExtender");
-        armRotator = HWM.get(DcMotor.class, "armRotator");
+        armRotator = HWM.get(DcMotorEx.class, "armRotator");
 
         /*linearMotionRight1 = HWM.get(DcMotor.class, "linearMotionRight1");
         intakeHD = HWM.get(DcMotor.class, "Intake");
@@ -96,9 +100,6 @@ public class Clark10518HWMap {
         armExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armExtender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        armRotator.setDirection(DcMotorSimple.Direction.FORWARD);
-        armRotator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armRotator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         claw.setDirection(Servo.Direction.FORWARD);
