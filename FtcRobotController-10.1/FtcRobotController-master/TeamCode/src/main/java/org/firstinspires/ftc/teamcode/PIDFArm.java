@@ -11,10 +11,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 @Config
 public class PIDFArm extends OpMode{
     private PIDController controller;
-    public static double p=0.1,i=0,d=0.0009;
-    public static double f=0.22;
+    public static double p=0.1,i=0,d=0;
+    public static double f=0;
     public static int target =70;
-    private final double ticks_in_degree = 2100;
+    private final double ticks_in_degree = 1792;
     private DcMotorEx arm_motor;
     @Override
     public void init(){
@@ -29,7 +29,7 @@ public class PIDFArm extends OpMode{
         controller.setPID(p,i,d);
         int armPos = arm_motor.getCurrentPosition();
         double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(Math.toRadians(target/ticks_in_degree))*f;
+        double ff = Math.cos(Math.toRadians(target/ticks_in_degree))*f; // 46174
 
         double power = pid +ff;
 
