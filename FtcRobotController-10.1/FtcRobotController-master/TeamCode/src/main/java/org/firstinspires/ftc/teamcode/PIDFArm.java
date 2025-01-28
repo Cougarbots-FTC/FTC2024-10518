@@ -16,13 +16,18 @@ public class PIDFArm extends OpMode{
     public static int target =70;
     private final double ticks_in_degree = 2100;
     private DcMotorEx arm_motor;
+
+    public PIDFArm(DcMotorEx arm_motor) {
+        this.arm_motor = arm_motor;
+
+        controller = new PIDController(p,i,d);
+    }
     @Override
     public void init(){
-        controller = new PIDController(p,i,d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        arm_motor = hardwareMap.get(DcMotorEx.class,"armRotator");
-        arm_motor.setDirection(DcMotorEx.Direction.REVERSE);
+        //arm_motor = hardwareMap.get(DcMotorEx.class,"armRotator");
+        //arm_motor.setDirection(DcMotorEx.Direction.REVERSE);
     }
     @Override
     public void loop(){
@@ -35,8 +40,21 @@ public class PIDFArm extends OpMode{
 
         arm_motor.setPower(power);
 
-        telemetry.addData("pos",armPos);
-        telemetry.addData("target", target);
-        telemetry.update();
+        //telemetry.addData("pos",armPos);
+        //telemetry.addData("target", target);
+        //telemetry.update();
     }
+    public void setSetpoint(int newTarget) {
+        target = newTarget;
+    }
+    public int getSetpoint() {
+        return target;
+    }
+    public int getCurrentPosition() {
+        return arm_motor.getCurrentPosition();
+    }
+    public void setPower(double power) {
+        arm_motor.setPower(power);
+    }
+
 }
