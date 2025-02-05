@@ -30,14 +30,14 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
     Boolean gamepad1YState = false;
 
     // The values for the claw
-    double clawOpenPos = 0.0;
-    double clawClosePos = 1;
-    double currentClawPos = 0.0;
+    double clawOpenPos = 1.0;
+    double clawClosePos = 0;
+    double currentClawPos = 1;
 
-    // The values for the WristY
-    double clawWristYUp = 0.0;
-    double clawWristYDown = 1.0;
-    double currentWristYPos = 0.0;
+    // The values for the WristY    `
+    double clawWristYUp = 0.5;
+    double clawWristYDown = 0.0;
+    double currentWristYPos = 0.5;
 
     // The values for the WristX
     double clawWristXVertical = 1.0;
@@ -99,16 +99,16 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
         //Obtains values for each motor through the positions through values
         //from  left joystick which has up/down(vertical) and left/right values(horizontal), and right joystick which has left/right values(pivot)
         double denominator = Math.max(Math.abs(vertical) + Math.abs(horizontal) + Math.abs(pivot), 1);
-        double rightFrontPower = (horizontal - vertical + pivot) / denominator;
-        double rightBackPower = (horizontal + vertical + pivot) / denominator;
-        double LeftFrontPower = (horizontal + vertical - pivot) / denominator;
-        double LeftBackPower = (horizontal - vertical - pivot) / denominator;
+        double frontRightChassis = (vertical + horizontal + pivot) / denominator;
+        double backRightChassis = (vertical - horizontal + pivot) / denominator;
+        double frontLeftChassis = (vertical - horizontal - pivot) / denominator;
+        double backLeftChassis = (vertical + horizontal - pivot) / denominator;
 
         //Sets Power to the motors and changed the signed of the math in order to proportion the wheels right to move
-        robot.frontRightChassis.setPower(rightFrontPower * chassisPower);
-        robot.backRightChassis.setPower(rightBackPower * chassisPower);
-        robot.backLeftChassis.setPower(LeftBackPower * chassisPower);
-        robot.frontLeftChassis.setPower(LeftFrontPower * chassisPower);
+        robot.frontRightChassis.setPower(frontRightChassis * chassisPower);
+        robot.backRightChassis.setPower(backRightChassis * chassisPower);
+        robot.backLeftChassis.setPower(backLeftChassis * chassisPower);
+        robot.frontLeftChassis.setPower(frontLeftChassis * chassisPower);
     }
 
     public void moveLifts(){
