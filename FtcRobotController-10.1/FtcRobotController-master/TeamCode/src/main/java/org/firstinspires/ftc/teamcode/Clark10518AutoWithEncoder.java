@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "Clark15024n Auto By Encoder", group = "auto")
 public class Clark10518AutoWithEncoder extends LinearOpMode {
@@ -23,13 +27,30 @@ public class Clark10518AutoWithEncoder extends LinearOpMode {
         static final double     WHEEL_DIAMETER_INCHES   = 3.0 ;     // For figuring circumference
         static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                 (WHEEL_DIAMETER_INCHES * 3.1415);
-        static final double     DRIVE_SPEED             = 0.6;
+        static final double CORRECTION = 0.83333;
+        static final double     DRIVE_SPEED             = 1;
         static final double     TURN_SPEED              = 0.5;
 
         static final double LIFT_GEAR_RATIO = 13.7;
         static final double LIFT_COUNTS_PER_INCH = (438 * LIFT_GEAR_RATIO) / (Math.PI * 2) * 2; //* 28;
 
-        @Override
+        // The values for the claw
+        double clawOpenPos = 1.0;
+        double clawClosePos = 0;
+        double currentClawPos = 1;
+
+        // The values for the WristY    `
+        double clawWristYUp = 0.5;
+        double clawWristYDown = 0.0;
+        double currentWristYPos = 0.5;
+
+        // The values for the WristX
+        double clawWristXVertical = 1.0;
+        double clawWristXHorizontal = 0.5;
+        double currentWristXPos = 1.0;
+
+
+    @Override
         public void runOpMode(){
             robot.Map(hardwareMap);
             telemetry.addData("Time", runtime.time());
@@ -43,19 +64,83 @@ public class Clark10518AutoWithEncoder extends LinearOpMode {
             robot.backRightChassis.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.backLeftChassis.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
             //robot.LiftA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             //robot.LiftB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             waitForStart();
 
             // Step through each leg of the path,
-            robot.claw.setPosition(0);
+
+            // Initialize the claw
+            robot.wristX.setPosition(clawWristXVertical);`i
+            robot.wristY.setPosition(clawWristYUp);
+            robot.claw.setPosition(clawClosePos);
+
+            // Move the extender up
+            robot.armRotator.setPower(-0.4);
+            robot.armExtender.setPower(0.6);
+            sleep(1650);
+            robot.armExtender.setPower(0.2); // holds the extender in position
+
+            encoderDrive(DRIVE_SPEED,-29,-29,50000);
+            sleep(500);
+
+            robot.armExtender.setPower(-0.7);
+            sleep(1000);
+            robot.armExtender.setPower(0.2);
+            robot.claw.setPosition(clawOpenPos);
+            sleep(100);
+            robot.armExtender.setPower(-0.3);
+            sleep(2000);
+
+           encoderDrive(DRIVE_SPEED,5,5,10000);
+           rightTurn();
+           encoderDrive(DRIVE_SPEED,-40,-40,10000);
+           leftTurn();
+
+           encoderDrive(0.8,-30,-30,10000);
+           rightTurn();
+           encoderDrive(0.8,-12, -12, 10000);
+           leftTurn();
+           encoderDrive(0.8, 46,46,10000);
+           encoderDrive(0.8, -46,-46,10000);
+           rightTurn();
+           encoderDrive(0.8,-10,-10,10000);
+           leftTurn();
+           encoderDrive(0.8, 46,46,10000);
+           encoderDrive(0.8, -12,-12,10000);
+           rightTurn();
+           rightTurn();
+           encoderDrive(DRIVE_SPEED, -24,-24,10000);
+           robot.claw.setPosition(clawClosePos);
+           encoderDrive(DRIVE_SPEED,18,18,10000);
+           rightTurn();
+           encoderDrive(DRIVE_SPEED,-40,-40,10000);
+           rightTurn();
+
+           // Scoring Another Specimen
+          robot.armRotator.setPower(-0.4);
+          robot.armExtender.setPower(0.6);
+          sleep(1650);
+          robot.armExtender.setPower(0.2); // holds the extender in position
+          encoderDrive(DRIVE_SPEED,-29,-29,50000);
+          robot.armExtender.setPower(-0.7);
+          sleep(1000);
+          robot.armExtender.setPower(0.2);
+          robot.claw.setPosition(clawOpenPos);
+          robot.armExtender.setPower(-0.3);
+          sleep(2000);
+
+
+
+
             //encoderDrive(DRIVE_SPEED,  20,  20, 5.0);       //Move toward submersible - Total distance to submersible is 25.5
 
             //deliver_specimen(4.21);
 
             //TODO: make this a function - move to get new piece
-            encoderDrive(DRIVE_SPEED, 10, 10, 5.0);       //reverse
+            //encoderDrive(DRIVE_SPEED, 10, 10, 5.0);       //reverse
             //turn to left
             //move back
             //turn left
@@ -159,12 +244,12 @@ public class Clark10518AutoWithEncoder extends LinearOpMode {
             if (opModeIsActive()) {
 
                 // Determine new target position, and pass to motor controller
-                newLeftTarget = robot.frontLeftChassis.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-                newRightTarget = robot.frontRightChassis.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+                newLeftTarget = robot.frontLeftChassis.getCurrentPosition() + (int) ((leftInches * COUNTS_PER_INCH) * CORRECTION);
+                newRightTarget = robot.frontRightChassis.getCurrentPosition() + (int) ((rightInches * COUNTS_PER_INCH) * CORRECTION);
                 robot.frontLeftChassis.setTargetPosition(newLeftTarget);
                 robot.frontRightChassis.setTargetPosition(newRightTarget);
-                robot.backLeftChassis.setTargetPosition(newLeftTarget-12);
-                robot.backRightChassis.setTargetPosition(newRightTarget-12);
+                robot.backLeftChassis.setTargetPosition(newLeftTarget - 12);
+                robot.backRightChassis.setTargetPosition(newRightTarget - 12);
 
                 robot.frontLeftChassis.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.frontRightChassis.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -207,9 +292,16 @@ public class Clark10518AutoWithEncoder extends LinearOpMode {
                 robot.backLeftChassis.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.backRightChassis.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-                sleep(250);   // optional pause after each move.
+                //sleep(250);   // optional pause after each move.
+
             }
+            }
+            public void rightTurn(){
+            encoderDrive(DRIVE_SPEED,-24,24,10000);
         }
+            public void leftTurn(){
+            encoderDrive(DRIVE_SPEED,24,-24,10000);
+            }
 
 
 }

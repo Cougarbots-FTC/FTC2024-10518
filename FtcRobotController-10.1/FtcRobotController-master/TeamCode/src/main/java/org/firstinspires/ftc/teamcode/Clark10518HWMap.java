@@ -31,10 +31,9 @@ public class Clark10518HWMap {
     public Servo wristX = null;
     public Servo wristY = null;
 
-    //public SparkFunOTOS odom = null;
-    //public SparkFunOTOS.Pose2D pos = null;
-    //public SensorSparkFunOTOS odom = null;
-    //public Servo drop = null;
+    public SparkFunOTOS myOtos = null;
+
+
 
 
 
@@ -111,6 +110,9 @@ public class Clark10518HWMap {
         wristY.setDirection(Servo.Direction.REVERSE);
         //wristY.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        // sensors
+
+        myOtos = HWM.get(SparkFunOTOS.class, "sensor_otos");
 
         //pos = odom.getPosition();
 

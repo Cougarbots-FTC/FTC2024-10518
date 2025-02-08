@@ -162,27 +162,24 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
     public void extendArm(){
         //armExtender on DPad up and down
         double armExtenderPower = gamepad1.right_bumper ? 0.5 : 1;
-        if (gamepad1.dpad_down) {
+        if (gamepad1.dpad_up) {
             robot.armExtender.setPower(armExtenderPower);
-        } else if (gamepad1.dpad_up) {
+        } else if (gamepad1.dpad_down) {
             robot.armExtender.setPower(-1 * armExtenderPower);
         } else {
-            robot.armExtender.setPower(0);
+            robot.armExtender.setPower(0.1);
         }
     }
 
     public void rotateArm(){
-        if (gamepad2.a) {
-            pidfArm.setSetpoint(-150); // Set encoder position to -150
-        } else if (gamepad2.b) {
-            pidfArm.setSetpoint(-300); // Set encoder position to -300
+        double armRotatorPower = gamepad1.right_bumper ? 0.5 : 1;
+        if (gamepad1.dpad_left) {
+            robot.armRotator.setPower(armRotatorPower);
+        } else if (gamepad1.dpad_right) {
+            robot.armRotator.setPower(-1 * armRotatorPower);
+        } else {
+            robot.armRotator.setPower(-0.2);
         }
-        pidfArm.loop();
-
-        // Telemetry for debugging
-        //telemetry.addData("Target Position", pidfArm.getSetpoint());
-        telemetry.addData("Current Position", robot.armRotator.getCurrentPosition());
-        telemetry.update();
     }
 
 
