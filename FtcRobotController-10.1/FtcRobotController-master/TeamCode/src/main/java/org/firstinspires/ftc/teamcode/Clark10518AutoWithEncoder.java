@@ -73,7 +73,7 @@ public class Clark10518AutoWithEncoder extends LinearOpMode {
             // Step through each leg of the path,
 
             // Initialize the claw
-            robot.wristX.setPosition(clawWristXVertical);
+            robot.wristX.setPosition(clawWristXVertical);`i
             robot.wristY.setPosition(clawWristYUp);
             robot.claw.setPosition(clawClosePos);
 
@@ -113,7 +113,6 @@ public class Clark10518AutoWithEncoder extends LinearOpMode {
            rightTurn();
            rightTurn();
            encoderDrive(DRIVE_SPEED, -24,-24,10000);
-           sleep(1000);
            robot.claw.setPosition(clawClosePos);
            encoderDrive(DRIVE_SPEED,18,18,10000);
            rightTurn();

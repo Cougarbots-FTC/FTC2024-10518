@@ -95,7 +95,7 @@ public class Clark10518HWMap {
         rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //TODO Change direction of motor according to the plans of hardware team
-        armExtender.setDirection(DcMotorSimple.Direction.REVERSE);
+        armExtender.setDirection(DcMotorSimple.Direction.FORWARD);
         armExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armExtender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
