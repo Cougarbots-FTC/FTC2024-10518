@@ -43,6 +43,7 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
     double clawWristXVertical = 1.0;
     double clawWristXHorizontal = 0.5;
     double currentWristXPos = 1.0;
+    int SUBPOS = -400;
 
 
 
@@ -68,7 +69,7 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
             moveLifts();
 
             // Extends the arm (DPAD-left,right)
-            extendArm();
+            extendArmWithoutEncoder();
 
             // Rotates the arm (DPAD-up,down)
             rotateArm();
@@ -159,7 +160,7 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
         initLifts();
     }
 
-    public void extendArm(){
+    public void extendArmWithoutEncoder(){
         //armExtender on DPad up and down
         double armExtenderPower = gamepad1.right_bumper ? 0.5 : 1;
         if (gamepad1.dpad_up) {
@@ -170,6 +171,26 @@ public class Clark10518TeleOpv1 extends LinearOpMode {
             robot.armExtender.setPower(0.1);
         }
     }
+
+    public void extendArmWithEncoder(){
+        double armExtenderPower = gamepad1.right_bumper ? 0.5:1;
+        if (gamepad1.a) {
+            robot.armExtender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.armExtender.setTargetPosition(SUBPOS);
+            robot.armExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armExtender.setPower(armExtenderPower);
+            while (opModeIsActive() &&
+                    (robot.armExtender.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Running to", " %7d", SUBPOS);
+                telemetry.addData("Currently at", "%7d", robot.armExtender.getCurrentPosition());
+                telemetry.update();
+            }
+            // setting power to 0
+            robot.armExtender.setPower(0.1);
+            robot.armExtender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }}
 
     public void rotateArm(){
         double armRotatorPower = gamepad1.right_bumper ? 0.5 : 1;
